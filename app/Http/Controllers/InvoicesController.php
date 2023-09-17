@@ -15,6 +15,7 @@ use App\Notifications\AddInvoice;
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Events\MyEventClass;
+use App\Models\invoice_attachments;
 use App\Models\products;
 
 class InvoicesController extends Controller
@@ -22,7 +23,23 @@ class InvoicesController extends Controller
 
     public function index()
     {
-        $invoices = invoices::all();
+        $invoices = invoices::leftjoin('invoices_details','invoices.id','=','invoices_details.id')
+        ->leftjoin('products','invoices_details.product','=','products.id')
+        ->leftjoin('sections','invoices_details.section','=','sections.id')
+         ->select('invoices.id','products.Product_name', 'sections.Section_name','invoices.invoice_number','invoices.invoice_Date','invoices.Due_date','invoices.Discount','invoices.Rate_VAT','invoices.Value_VAT','invoices.Total','invoices.Status','invoices.Value_Status')
+            ->get();
+        ;
+
+
+        // foreach($invoices as $invoice){
+        //     $products = invoices_details ::join('invoices', 'invoices_details.id_Invoice', '=', 'invoices.id')
+        //     ->where('invoices.id', '=', $invoice->id)
+        //     ->select('invoices.id', 'invoices_details.product', 'invoices_details.section')
+        //     ->get();
+        // }
+        // dd($invoices);
+
+
         return view('invoices.invoices', compact('invoices'));
     }
 
@@ -34,12 +51,20 @@ class InvoicesController extends Controller
     public function create()
     {
 
-        $products = products::all();
+        // $products = products::all();
         $sections = sections::all();
-        // dd($products);
-        return view('invoices.add-invoices', compact('products', 'sections'));
-    }
+        // $invoice_id = invoices::latest()->first()->id;
 
+        // dd($products);
+        return view('invoices.add-invoices', compact( 'sections'));
+    }
+    public function users(Request $request, $id) {
+        if ($request->ajax()) {
+            return response()->json([
+                'products' => products::where('section_id', $id)->get()
+            ]);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -84,7 +109,7 @@ class InvoicesController extends Controller
             $file_name = $image->getClientOriginalName();
             $invoice_number = $request->invoice_number;
 
-            $attachments = new invoices_attachements();
+            $attachments = new invoice_attachments();
             $attachments->file_name = $file_name;
             $attachments->invoice_number = $invoice_number;
             $attachments->Created_by = Auth::user()->name;
@@ -106,7 +131,11 @@ class InvoicesController extends Controller
 
 
 
-
+        // $validated = $request->validate([
+        //     'invoice_Date'=>'required',
+        //     'Due_date' => 'required|date|date_format:Y-m-d|before:invoice_Date',
+        //        ]);
+        //        return redirect('invoices.add-invoices');
 
 
 
@@ -137,8 +166,10 @@ class InvoicesController extends Controller
     public function edit($id)
     {
         $invoices = invoices::where('id', $id)->first();
+        $invoices_details = invoices_details::where('id_Invoice', $id)->first();
+
         $sections = sections::all();
-        return view('invoices.edit_invoice', compact('sections', 'invoices'));
+        return view('invoices.edit_invoice', compact('sections', 'invoices','invoices_details'));
     }
 
     /**
@@ -181,7 +212,7 @@ class InvoicesController extends Controller
     {
         $id = $request->invoice_id;
         $invoices = invoices::where('id', $id)->first();
-        $Details = invoices_attachements::where('invoice_id', $id)->first();
+        $Details = invoice_attachments::where('invoice_id', $id)->first();
 
         $id_page = $request->id_page;
 

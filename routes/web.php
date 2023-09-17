@@ -23,6 +23,7 @@ Route::resource('products', 'App\Http\Controllers\ProductsController');
 Route::get('/section/{id}', 'InvoicesController@getproducts');
 Route::resource('products/update', 'App\Http\Controllers\ProductsController@update');
 // Route::get('xyz', 'App\Http\Controllers\ProductsController@product');
+Route::get('/edit_invoice/{id}', 'App\Http\Controllers\InvoicesController@edit');
 
 
 Auth::routes(['register'=>false]);

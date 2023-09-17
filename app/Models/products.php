@@ -13,5 +13,8 @@ class products extends Model
    {
    return $this->belongsTo('App\Models\sections');
    }
-
+   public function invoice_details()
+   {
+   return $this->belongsTo('App\Models\invoice_details');
+   }
 }

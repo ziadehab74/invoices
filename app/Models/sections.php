@@ -17,4 +17,8 @@ class sections extends Model
     {
     return $this->hasMany('App\Models\products');
     }
+    public function invoice_details()
+    {
+    return $this->belongsTo('App\Models\invoice_details');
+    }
 }

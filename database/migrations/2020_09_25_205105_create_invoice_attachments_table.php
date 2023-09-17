@@ -19,7 +19,7 @@ class CreateInvoiceAttachmentsTable extends Migration
             $table->string('invoice_number', 50);
             $table->string('Created_by', 999);
             $table->unsignedBigInteger('invoice_id')->nullable();
-            // $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -22,4 +22,12 @@ class invoices_details extends Model
         'updated_at',
 
     ];
+    public function section()
+    {
+    return $this->hasMany('App\Models\sections');
+    }
+    public function product()
+    {
+    return $this->hasMany('App\Models\products');
+    }
 }
