@@ -53,7 +53,7 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">رقم الفاتورة</label>
                                 <input type="text" class="form-control" id="inputName" name="invoice_number"
-                                    title="يرجي ادخال رقم الفاتورة" value="" readonly>
+                                    title="يرجي ادخال رقم الفاتورة" value="{{$invoice_id}}" readonly >
                             </div>
 
                             <div class="col">
@@ -97,7 +97,7 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ التحصيل</label>
                                 <input type="text" class="form-control" id="inputName" name="Amount_collection"
-                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); required">
                             </div>
                         </div>
 
@@ -242,10 +242,11 @@
                         dataType: "json",
                         success: function(data) {
                             $('select[name="product"]').empty();
-                            // $.each(data, function(key, value) {
-                            //     $('select[name="product"]').append('<option value="' +
-                            //         value + '">' + value + '</option>');
-                            // });
+                            $.each(data, function(key, value) {
+                                $('select[name="product"]').append('<option value="' +
+                                    key + '">' + value + '</option>');
+                            });
+                        console.log(data);
                         },
                     });
                 } else {

@@ -18,8 +18,10 @@ class CreateInvoicesDetailsTable extends Migration
             $table->unsignedBigInteger('id_Invoice');
             $table->string('invoice_number', 50);
             $table->foreign('id_Invoice')->references('id')->on('invoices')->onDelete('cascade');
-            $table->string('product', 50);
-            $table->string('Section', 999);
+            $table->bigInteger( 'product' )->unsigned();
+            $table->foreign('product')->references('id')->on('products')->onDelete('cascade');
+            $table->bigInteger( 'Section' )->unsigned();
+            $table->foreign('Section')->references('id')->on('sections')->onDelete('cascade');
             $table->string('Status', 50);
             $table->integer('Value_Status');
             $table->date('Payment_Date')->nullable();

@@ -23,20 +23,24 @@ class InvoicesController extends Controller
 
     public function index()
     {
-        $invoices = invoices::leftjoin('invoices_details','invoices.id','=','invoices_details.id')
-        ->leftjoin('products','invoices_details.product','=','products.id')
-        ->leftjoin('sections','invoices_details.section','=','sections.id')
-         ->select('invoices.id','products.Product_name', 'sections.Section_name','invoices.invoice_number','invoices.invoice_Date','invoices.Due_date','invoices.Discount','invoices.Rate_VAT','invoices.Value_VAT','invoices.Total','invoices.Status','invoices.Value_Status')
+        $invoices = invoices::leftjoin('invoices_details', 'invoices.id', '=', 'invoices_details.id')
+            ->leftjoin('products', 'invoices_details.product', '=', 'products.id')
+            ->leftjoin('sections', 'invoices_details.section', '=', 'sections.id')
+            ->select(
+                'invoices.id',
+                'products.Product_name',
+                'sections.Section_name',
+                'invoices.invoice_number',
+                'invoices.invoice_Date',
+                'invoices.Due_date',
+                'invoices.Discount',
+                'invoices.Rate_VAT',
+                'invoices.Value_VAT',
+                'invoices.Total',
+                'invoices.Status',
+                'invoices.Value_Status'
+            )
             ->get();
-        ;
-
-
-        // foreach($invoices as $invoice){
-        //     $products = invoices_details ::join('invoices', 'invoices_details.id_Invoice', '=', 'invoices.id')
-        //     ->where('invoices.id', '=', $invoice->id)
-        //     ->select('invoices.id', 'invoices_details.product', 'invoices_details.section')
-        //     ->get();
-        // }
         // dd($invoices);
 
 
@@ -51,19 +55,21 @@ class InvoicesController extends Controller
     public function create()
     {
 
-        // $products = products::all();
         $sections = sections::all();
-        // $invoice_id = invoices::latest()->first()->id;
-
-        // dd($products);
-        return view('invoices.add-invoices', compact( 'sections'));
-    }
-    public function users(Request $request, $id) {
-        if ($request->ajax()) {
-            return response()->json([
-                'products' => products::where('section_id', $id)->get()
-            ]);
+        $invoice_id = invoices::latest()->first();
+        if ($invoice_id == null) {
+            $invoice_id = 1;
+        } else if ($invoice_id == '1') {
+            $invoice_id == 1;
+        } else {
+            $invoice_id = $invoice_id->id + 1;
         }
+        return view('invoices.add-invoices', compact('sections', 'invoice_id'));
+    }
+    public function getproducts($id)
+    {
+        $products = DB::table("products")->where("section_id", $id)->pluck("Product_name", "id");
+        return json_encode($products);
     }
     /**
      * Store a newly created resource in storage.
@@ -77,8 +83,6 @@ class InvoicesController extends Controller
             'invoice_number' => $request->invoice_number,
             'invoice_Date' => $request->invoice_Date,
             'Due_date' => $request->Due_date,
-            // 'product' => $request->product,
-            // 'section_id' => $request->Section,
             'Amount_collection' => $request->Amount_collection,
             'Amount_Commission' => $request->Amount_Commission,
             'Discount' => $request->Discount,
@@ -101,7 +105,7 @@ class InvoicesController extends Controller
             'note' => $request->note,
             'user' => (Auth::user()->name),
         ]);
-// dd($request);
+        // dd($request);
         if ($request->hasFile('pic')) {
 
             $invoice_id = Invoices::latest()->first()->id;
@@ -153,7 +157,27 @@ class InvoicesController extends Controller
      */
     public function show($id)
     {
-        $invoices = invoices::where('id', $id)->first();
+        $invoices = invoices::leftjoin('invoices_details', 'invoices.id', '=', 'invoices_details.id')
+        ->leftjoin('products', 'invoices_details.product', '=', 'products.id')
+        ->leftjoin('sections', 'invoices_details.section', '=', 'sections.id')
+        ->select(
+            'invoices.id',
+            'products.Product_name',
+            'sections.Section_name',
+            'invoices_details.product',
+            'invoices_details.section',
+            'invoices.invoice_number',
+            'invoices.invoice_Date',
+            'invoices.Due_date',
+            'invoices.Discount',
+            'invoices.Rate_VAT',
+            'invoices.Value_VAT',
+            'invoices.Total',
+            'invoices.Status',
+            'invoices.Value_Status'
+        )
+        ->where('id_Invoice', $id)->first();
+        // dd($invoices);
         return view('invoices.status_update', compact('invoices'));
     }
 
@@ -169,7 +193,7 @@ class InvoicesController extends Controller
         $invoices_details = invoices_details::where('id_Invoice', $id)->first();
 
         $sections = sections::all();
-        return view('invoices.edit_invoice', compact('sections', 'invoices','invoices_details'));
+        return view('invoices.edit_invoice', compact('sections', 'invoices', 'invoices_details'));
     }
 
     /**
@@ -183,12 +207,13 @@ class InvoicesController extends Controller
     {
 
         $invoices = invoices::findOrFail($request->invoice_id);
+        $invoices_details = invoices_details::findOrFail($request->invoice_id);
+
         $invoices->update([
             'invoice_number' => $request->invoice_number,
             'invoice_Date' => $request->invoice_Date,
             'Due_date' => $request->Due_date,
-            'product' => $request->product,
-            'section_id' => $request->Section,
+
             'Amount_collection' => $request->Amount_collection,
             'Amount_Commission' => $request->Amount_Commission,
             'Discount' => $request->Discount,
@@ -197,9 +222,12 @@ class InvoicesController extends Controller
             'Total' => $request->Total,
             'note' => $request->note,
         ]);
-
+        $invoices_details->update([
+            'product' => $request->product,
+            'Section' => $request->Section,
+        ]);
         session()->flash('edit', 'تم تعديل الفاتورة بنجاح');
-        return back();
+        return redirect('/invoices');
     }
 
     /**
@@ -217,34 +245,30 @@ class InvoicesController extends Controller
         $id_page = $request->id_page;
 
 
-        if (!$id_page == 2) {
+        // if (!$id_page == 2) {
 
-            if (!empty($Details->invoice_number)) {
+        //     if (!empty($Details->invoice_number)) {
 
-                Storage::disk('public_uploads')->deleteDirectory($Details->invoice_number);
-            }
+        //         Storage::disk('public_uploads')->deleteDirectory($Details->invoice_number);
+        //     }
 
-            $invoices->forceDelete();
-            session()->flash('delete_invoice');
-            return redirect('/invoices');
-        } else {
+        //     $invoices->forceDelete();
+        //     session()->flash('delete_invoice');
+        //     return redirect('/invoices');
+        // } else {
 
-            $invoices->delete();
-            session()->flash('archive_invoice');
-            return redirect('/Archive');
-        }
+        //     $invoices->delete();
+        //     session()->flash('archive_invoice');
+        //     return redirect('/Archive');
+        // }
     }
-    public function getproducts($id)
-    {
-        $products = DB::table("products")->where("section_id", $id)->pluck("Product_name", "id");
-        return json_encode($products);
-    }
+
 
 
     public function Status_Update($id, Request $request)
     {
         $invoices = invoices::findOrFail($id);
-
+        $invoices_Details=invoices_details::findOrFail($id);
         if ($request->Status === 'مدفوعة') {
 
             $invoices->update([
@@ -253,7 +277,7 @@ class InvoicesController extends Controller
                 'Payment_Date' => $request->Payment_Date,
             ]);
 
-            invoices_Details::create([
+            $invoices_Details->update([
                 'id_Invoice' => $request->invoice_id,
                 'invoice_number' => $request->invoice_number,
                 'product' => $request->product,
@@ -262,7 +286,7 @@ class InvoicesController extends Controller
                 'Value_Status' => 1,
                 'note' => $request->note,
                 'Payment_Date' => $request->Payment_Date,
-                'user' => (Auth::user()->name),
+                // 'user' => (Auth::user()->name),
             ]);
         } else {
             $invoices->update([
@@ -270,7 +294,7 @@ class InvoicesController extends Controller
                 'Status' => $request->Status,
                 'Payment_Date' => $request->Payment_Date,
             ]);
-            invoices_Details::create([
+            $invoices_Details->update([
                 'id_Invoice' => $request->invoice_id,
                 'invoice_number' => $request->invoice_number,
                 'product' => $request->product,
@@ -279,7 +303,7 @@ class InvoicesController extends Controller
                 'Value_Status' => 3,
                 'note' => $request->note,
                 'Payment_Date' => $request->Payment_Date,
-                'user' => (Auth::user()->name),
+                // 'user' => (Auth::user()->name),
             ]);
         }
         session()->flash('Status_Update');
@@ -307,12 +331,33 @@ class InvoicesController extends Controller
 
     public function Print_invoice($id)
     {
-        $invoices = invoices::where('id', $id)->first();
+        $invoices = invoices::leftjoin('invoices_details', 'invoices.id', '=', 'invoices_details.id')
+            ->leftjoin('products', 'invoices_details.product', '=', 'products.id')
+            ->leftjoin('sections', 'invoices_details.section', '=', 'sections.id')
+            ->select(
+                'invoices.id',
+                'products.Product_name',
+                'sections.Section_name',
+                'invoices.invoice_number',
+                'invoices.invoice_Date',
+                'invoices.Due_date',
+                'invoices.Discount',
+                'invoices.Rate_VAT',
+                'invoices.Value_VAT',
+                'invoices.Total',
+                'invoices.Status',
+                'invoices.Value_Status'
+            )
+            ->where('invoices.id', $id)->first()
+            ->first();
+
+        // dd($invoices);
         return view('invoices.Print_invoice', compact('invoices'));
     }
 
     // public function export()
     // {
+
 
     //     return Excel::download(new InvoicesExport, 'invoices.xlsx');
 
