@@ -22,18 +22,19 @@ Route::resource('sections', 'App\Http\Controllers\SectionsController');
 Route::resource('products', 'App\Http\Controllers\ProductsController');
 Route::get('/section/{id}', 'InvoicesController@getproducts');
 Route::resource('products/update', 'App\Http\Controllers\ProductsController@update');
-// Route::get('xyz', 'App\Http\Controllers\ProductsController@product');
 Route::get('/edit_invoice/{id}', 'App\Http\Controllers\InvoicesController@edit');
 Route::get('/section/{id}', 'App\Http\Controllers\InvoicesController@getproducts');
 Route::get('/Print_invoice/{id}', 'App\Http\Controllers\InvoicesController@Print_invoice');
 Route::get('/Status_show/{id}', 'App\Http\Controllers\InvoicesController@show')->name('Status_show');
 Route::post('/Status_Update/{id}', 'App\Http\Controllers\InvoicesController@Status_Update')->name('Status_Update');
-
-
 Auth::routes(['register'=>false]);
-
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Auth::routes();
 
+Route::group(['middleware' => ['auth']], function() {
+
+    Route::resource('roles','RoleController');
+
+    Route::resource('users','App\Http\Controllers\UserController');
+
+    });

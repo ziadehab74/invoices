@@ -29,7 +29,7 @@ class InvoicesController extends Controller
             ->select(
                 'invoices.id',
                 'products.Product_name',
-                'sections.Section_name',
+                'sections.section_name',
                 'invoices.invoice_number',
                 'invoices.invoice_Date',
                 'invoices.Due_date',
