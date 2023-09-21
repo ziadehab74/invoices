@@ -73,8 +73,9 @@
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-down text-white"></i>
 											<span class="text-white op-7">
-                                                {{round(\App\Models\invoices::where('Value_Status','2')->count() /
-                                                \App\Models\invoices::where('Value_Status','2')->count()*100 ,2)}}%
+                                                {{-- {{round(\App\Models\invoices::where('Value_Status','2')->count() /
+                                                \App\Models\invoices::where('Value_Status','2')->count()*100 ,2)}}% --}}
+                                            {{$result6}}%
                                             </span>
 										</span>
 									</div>
@@ -119,7 +120,7 @@
 										</div>
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-down text-white"></i>
-											<span class="text-white op-7">{{$result6}}%</span>
+											<span class="text-white op-7">{{$result9}}%</span>
 										</span>
 									</div>
 								</div>

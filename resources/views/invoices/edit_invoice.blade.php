@@ -78,9 +78,9 @@
                                 <select name="Section" class="form-control SlectBox" onclick="console.log($(this).val())"
                                     onchange="console.log('change is firing')">
                                     <!--placeholder-->
-                                    {{-- <option value=" {{ $invoices->invoices_details->Section->id }}">
-                                        {{  $invoices->invoices_details->sections->section_name  }}
-                                    </option> --}}
+                                    <option value=" {{ $invoices->section}}">
+                                        {{ $invoices->Section_name }}
+                                    </option>
                                     {{-- <option value="{{ $sections->id }}"> {{ $sections->section_name }}</option> --}}
                                     {{-- <option value="{{ $section->id }}"> {{ $section->section_name }}</option> --}}
 
@@ -93,7 +93,7 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">المنتج</label>
                                 <select id="product" name="product" class="form-control">
-                                    <option value="{{ $invoices->product }}"> {{ $invoices->product }}</option>
+                                    <option value="{{ $invoices->product }}"> {{ $invoices->Product_name }}</option>
                                 </select>
                             </div>
 

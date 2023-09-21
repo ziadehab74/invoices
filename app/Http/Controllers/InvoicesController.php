@@ -79,6 +79,13 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'Due_date' => 'after:invoice_Date',
+        ],
+        [
+            // 'Due_date    .after:invoice_Date' => 'يرجي ادخال تاريخ بعد تاريخ انشاء الفاتورة',
+
+        ]);
         invoices::create([
             'invoice_number' => $request->invoice_number,
             'invoice_Date' => $request->invoice_Date,
@@ -189,11 +196,36 @@ class InvoicesController extends Controller
      */
     public function edit($id)
     {
-        $invoices = invoices::where('id', $id)->first();
-        $invoices_details = invoices_details::where('id_Invoice', $id)->first();
+        // $validatedData = $request->validate([
+        //     'invoices_details.product' => 'required',
+        // ],
+        // [
+        //     'invoices_details.product.required' => 'يرجي أضافة منتج اولا',
 
-        $sections = sections::all();
-        return view('invoices.edit_invoice', compact('sections', 'invoices', 'invoices_details'));
+        // ]);
+
+        $invoices = invoices::leftjoin('invoices_details', 'invoices.id', '=', 'invoices_details.id')
+        ->leftjoin('products', 'invoices_details.product', '=', 'products.id')
+        ->leftjoin('sections', 'invoices_details.section', '=', 'sections.id')
+        ->select(
+            'invoices.id',
+            'products.Product_name',
+            'sections.Section_name',
+            'invoices_details.product',
+            'invoices_details.section',
+            'invoices.invoice_number',
+            'invoices.invoice_Date',
+            'invoices.Due_date',
+            'invoices.Discount',
+            'invoices.Rate_VAT',
+            'invoices.Value_VAT',
+            'invoices.Total',
+            'invoices.Status',
+            'invoices.Value_Status'
+        )
+        ->where('id_Invoice', $id)->first();
+        $sections=sections::all();
+        return view('invoices.edit_invoice', compact( 'invoices','sections'));
     }
 
     /**

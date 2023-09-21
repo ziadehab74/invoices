@@ -30,14 +30,14 @@ class HomeController extends Controller
         $result1 = \App\Models\invoices::where('Value_Status', '1')->count();
         $result2 = \App\Models\invoices::where('Value_Status', '1')->count() * 100;
         if ($result2 == 0 || $result1 == 0) {
-            $result3 = 0;
+            $result3 = '0';
         } else {
             $result3 = $result1 / $result2;
         }
         $result4 = \App\Models\invoices::where('Value_Status', '2')->count();
         $result5 = \App\Models\invoices::where('Value_Status', '2')->count() * 100;
         if ($result4 == 0 || $result5 == 0) {
-            $result6 = 0;
+            $result6 = '0';
         } else {
             $result6 = $result4 / $result5;
         }
@@ -46,7 +46,7 @@ class HomeController extends Controller
         $result7 = \App\Models\invoices::where('Value_Status', '3')->count();
         $result8 = \App\Models\invoices::where('Value_Status', '3')->count() * 100;
         if ($result7 == 0 || $result8 == 0) {
-            $result9 = 0;
+            $result9 = '0';
         } else {
             $result9 = $result7 / $result8;
         }
@@ -93,7 +93,7 @@ class HomeController extends Controller
             ])
             ->options([]);
 
-        return view('home', compact('result3', 'result6', 'chartjs', 'chartjs_2'));
+        return view('home', compact('result3', 'result6','result9', 'chartjs', 'chartjs_2'));
 
 
 
