@@ -44,8 +44,6 @@ class SectionsController extends Controller
 
             'section_name.required' => 'يرجي ادخال اسم القسم',
             'section_name.unique' => 'اسم القسم مسجل مسبقا',
-
-
         ]);
         // dd($request->all());
         sections::create([
@@ -53,7 +51,6 @@ class SectionsController extends Controller
             'section_name' => $request->section_name,
             'description' => $request->description,
             'Created_by' => (Auth::user()->name),
-
         ]);
 
         session()->flash('Add', 'تم اضافة القسم بنجاح ');

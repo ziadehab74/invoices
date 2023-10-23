@@ -58,13 +58,7 @@ class InvoicesController extends Controller
         // dd($products);
         return view('invoices.add-invoices', compact( 'sections'));
     }
-    public function users(Request $request, $id) {
-        if ($request->ajax()) {
-            return response()->json([
-                'products' => products::where('section_id', $id)->get()
-            ]);
-        }
-    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -73,6 +67,14 @@ class InvoicesController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'Due_date' => 'after:invoice_Date',
+        ],
+        [
+            // 'Due_date    .after:invoice_Date' => 'يرجي ادخال تاريخ بعد تاريخ انشاء الفاتورة',
+
+        ]);
+dd( $validatedData);
         invoices::create([
             'invoice_number' => $request->invoice_number,
             'invoice_Date' => $request->invoice_Date,

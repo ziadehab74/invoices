@@ -31,6 +31,15 @@
     <!-- breadcrumb -->
 @endsection
 @section('content')
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
     @if (session()->has('Add'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -106,7 +115,7 @@
 
 
                                         <td>
-
+{{--
                                             <a class="modal-effect btn btn-sm btn-info" data-effect="effect-scale"
                                                data-pro_id="{{$Product->id }}" data-section_name="{{ $Product->Product_name }}"
                                                data-description="{{ $Product->description }}" data-toggle="modal" href="#edit_Product"
@@ -114,10 +123,10 @@
 
                                             <a class="modal-effect btn btn-sm btn-danger" data-effect="effect-scale"
                                                data-pro_id="{{ $Product->id  }}" data-section_name="{{  $Product->Product_name }}" data-toggle="modal"
-                                               href="#modaldemo9" title="حذف"><i class="las la-trash"></i></a>
+                                               href="#modaldemo9" title="حذف"><i class="las la-trash"></i></a> --}}
 
                                     </td>
-                                        {{-- <td>
+                                        <td>
                                             <button class="modal-effect btn btn-sm btn-info
                                                 data-name="{{ $Product->Product_name }}" data-pro_id="{{ $Product->id }}"
                                                 data-section_name="{{ $Product->section->section_name }}"
@@ -127,7 +136,7 @@
                                             <button class="btn btn-outline-danger btn-sm " data-pro_id="{{ $Product->id }}"
                                                 data-product_name="{{ $Product->Product_name }}" data-toggle="modal"
                                                 data-target="#modaldemo9">حذف</button>
-                                        </td> --}}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -157,7 +166,7 @@
                             </div>
 
                             <label class="my-1 mr-2" for="inlineFormCustomSelectPref">القسم</label>
-                            <select name="section_id" id="section_id" class="form-control" required>
+                            <select name="section_id" id="section_id" class="form-control" >
                                 <option value="" selected disabled> --حدد القسم--</option>
                                 @foreach ($sections as $section)
                                     <option value="{{ $section->id }}">{{ $section->section_name }}</option>
@@ -295,7 +304,7 @@
     <script>
         $('#edit_Product').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
-            var Product_name = button.data('name')
+            var Product_name = button.data('product_name')
             var section_name = button.data('section_name')
             var pro_id = button.data('pro_id')
             var description = button.data('description')
@@ -318,6 +327,7 @@
         })
 
     </script>
+
 
 
 

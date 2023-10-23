@@ -28,7 +28,15 @@
     <!-- breadcrumb -->
 @endsection
 @section('content')
-
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
     @if (session()->has('Add'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>{{ session()->get('Add') }}</strong>
@@ -53,7 +61,7 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">رقم الفاتورة</label>
                                 <input type="text" class="form-control" id="inputName" name="invoice_number"
-                                    title="يرجي ادخال رقم الفاتورة" value="" readonly>
+                                    title="يرجي ادخال رقم الفاتورة" value="" >
                             </div>
 
                             <div class="col">
@@ -242,10 +250,10 @@
                         dataType: "json",
                         success: function(data) {
                             $('select[name="product"]').empty();
-                            // $.each(data, function(key, value) {
-                            //     $('select[name="product"]').append('<option value="' +
-                            //         value + '">' + value + '</option>');
-                            // });
+                            $.each(data, function(key, value) {
+                                $('select[name="product"]').append('<option value="' +
+                                    value + '">' + value + '</option>');
+                            });
                         },
                     });
                 } else {
