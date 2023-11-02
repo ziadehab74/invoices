@@ -188,4 +188,5 @@
 <!--Internal  index js -->
 <script src="{{URL::asset('assets/js/index.js')}}"></script>
 <script src="{{URL::asset('assets/js/jquery.vmap.sampledata.js')}}"></script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 @endsection

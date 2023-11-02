@@ -27,6 +27,8 @@ class HomeController extends Controller
     {
         // $email = request("email");
         // $password = request("password");
+        // $results = \App\Models\invoices::select(\DB::raw("count(*) as total"), 'Value_Status')->groupBy('Value_Status')->get()->keyBy('Value_Status');
+        // dd($results->toArray());
         $result1 = \App\Models\invoices::where('Value_Status', '1')->count();
         $result2 = \App\Models\invoices::where('Value_Status', '1')->count() * 100;
         if ($result2 == 0 || $result1 == 0) {
