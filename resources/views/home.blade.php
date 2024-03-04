@@ -5,33 +5,19 @@
 <!-- Maps css -->
 <link href="{{URL::asset('assets/plugins/jqvmap/jqvmap.min.css')}}" rel="stylesheet">
 @endsection
+@section('title')
+الشاشة الرئيسية
+@stop
 @section('page-header')
 				<!-- breadcrumb -->
 				<div class="breadcrumb-header justify-content-between">
 					<div class="left-content">
-						{{-- <div>
-						  <h2 class="main-content-title tx-24 mg-b-1 mg-b-lg-1">! Hi, {{Auth::user()->name}} welcome back!</h2>
-						  <p class="mg-b-0">Sales monitoring dashboard template.</p>
-						</div> --}}
 					</div>
 					<div class="main-dashboard-header-right">
 						<div>
-							{{-- <label class="tx-13">Customer Ratings</label>
-							<div class="main-star">
-								<i class="typcn typcn-star active"></i> <i class="typcn typcn-star active"></i> <i class="typcn typcn-star active"></i> <i class="typcn typcn-star active"></i> <i class="typcn typcn-star"></i> <span>(14,873)</span>
-							</div> --}}
 						</div>
-						{{-- <div>
-							<label class="tx-13">Admins</label>
-							<h5>{{\app\models\user::count()}}</h5>
-						</div>
-						<div>
-							<label class="tx-13">Users</label>
-							<h5>7</h5>
-						</div> --}}
 					</div>
 				</div>
-				<!-- /breadcrumb -->
 @endsection
 @section('content')
 				<!-- row -->
@@ -45,12 +31,12 @@
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">{{number_format(\App\Models\invoices::sum('Total'),2)}}</h4>
-											<p class="mb-0 tx-12 text-white op-7">{{\App\Models\invoices::count()}}</p>
+											<h4 class="tx-20 font-weight-bold mb-1 text-white">{{$Total_invoices}}</h4>
+											<p class="mb-0 tx-12 text-white op-7">{{$invoices_count}}</p>
 										</div>
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-up text-white"></i>
-											<span class="text-white op-7"> +427</span>
+											<span class="text-white op-7"> </span>
 										</span>
 									</div>
 								</div>
@@ -67,15 +53,13 @@
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">{{number_format(\App\Models\invoices::where('Value_Status','2')->sum('Total'),2)}}</h4>
-											<p class="mb-0 tx-12 text-white op-7">{{\App\Models\invoices::where('Value_Status','2')->count()}}</p>
+											<h4 class="tx-20 font-weight-bold mb-1 text-white">{{$Total_unpaid_invoices}}</h4>
+											<p class="mb-0 tx-12 text-white op-7">{{$unpaid_invoices}}</p>
 										</div>
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-down text-white"></i>
 											<span class="text-white op-7">
-                                                {{-- {{round(\App\Models\invoices::where('Value_Status','2')->count() /
-                                                \App\Models\invoices::where('Value_Status','2')->count()*100 ,2)}}% --}}
-                                            {{$result6}}%
+
                                             </span>
 										</span>
 									</div>
@@ -93,12 +77,12 @@
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-                                            <h4 class="tx-20 font-weight-bold mb-1 text-white">{{number_format(\App\Models\invoices::where('Value_Status','1')->sum('Total'),2)}}</h4>
-											<p class="mb-0 tx-12 text-white op-7">{{\App\Models\invoices::where('Value_Status','1')->count()}}</p>
+                                            <h4 class="tx-20 font-weight-bold mb-1 text-white">{{$Total_paid_invoices}}</h4>
+											<p class="mb-0 tx-12 text-white op-7">{{$paid_invoices}}</p>
 										</div>
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-up text-white"></i>
-											<span class="text-white op-7"> {{$result3}}%</span>
+											<span class="text-white op-7"> </span>
 										</span>
 									</div>
 								</div>
@@ -115,12 +99,12 @@
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-                                            <h4 class="tx-20 font-weight-bold mb-1 text-white">{{number_format(\App\Models\invoices::where('Value_Status','3')->sum('Total'),2)}}</h4>
-											<p class="mb-0 tx-12 text-white op-7">{{\App\Models\invoices::where('Value_Status','3')->count()}}</p>
+                                            <h4 class="tx-20 font-weight-bold mb-1 text-white">{{$Total_Partially_invoices}}</h4>
+											<p class="mb-0 tx-12 text-white op-7">{{$Partially_paid_invoices}}</p>
 										</div>
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-down text-white"></i>
-											<span class="text-white op-7">{{$result9}}%</span>
+											<span class="text-white op-7"></span>
 										</span>
 									</div>
 								</div>
@@ -154,7 +138,8 @@
 							<div class="">
                                 <div style="width:100%;">
                                     {!! $chartjs_2->render() !!}
-                                    </div>							</div>
+                                    </div>
+                                </div>
 						</div>
 					</div>
 				</div>

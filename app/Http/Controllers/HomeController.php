@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\invoices;
 use App\Models\products;
 use App\Models\sections;
 use Illuminate\Http\Request;
@@ -25,56 +26,48 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // $email = request("email");
-        // $password = request("password");
-        // $results = \App\Models\invoices::select(\DB::raw("count(*) as total"), 'Value_Status')->groupBy('Value_Status')->get()->keyBy('Value_Status');
-        // dd($results->toArray());
-        $result1 = \App\Models\invoices::where('Value_Status', '1')->count();
-        $result2 = \App\Models\invoices::where('Value_Status', '1')->count() * 100;
-        if ($result2 == 0 || $result1 == 0) {
-            $result3 = '0';
-        } else {
-            $result3 = $result1 / $result2;
-        }
-        $result4 = \App\Models\invoices::where('Value_Status', '2')->count();
-        $result5 = \App\Models\invoices::where('Value_Status', '2')->count() * 100;
-        if ($result4 == 0 || $result5 == 0) {
-            $result6 = '0';
-        } else {
-            $result6 = $result4 / $result5;
-        }
+
+        $paid_invoices = invoices::where('Value_Status', '1')->count();
+        $paid_Percntage_invoices = $paid_invoices  * 100 ;
+        $Total_paid_invoices=number_format(invoices::where('Value_Status','1')->sum('Total'),2);
 
 
-        $result7 = \App\Models\invoices::where('Value_Status', '3')->count();
-        $result8 = \App\Models\invoices::where('Value_Status', '3')->count() * 100;
-        if ($result7 == 0 || $result8 == 0) {
-            $result9 = '0';
-        } else {
-            $result9 = $result7 / $result8;
-        }
+        $unpaid_invoices = invoices::where('Value_Status', '2')->count();
+        $unpaid_Percntage_invoices = $unpaid_invoices* 100;
+        $Total_unpaid_invoices=number_format(invoices::where('Value_Status','2')->sum('Total'),2);
+
+
+        $Partially_paid_invoices = invoices::where('Value_Status', '3')->count();
+        $Partially_paid_invoices_percntage = $Partially_paid_invoices* 100;
+        $Total_Partially_invoices=number_format(invoices::where('Value_Status','3')->sum('Total'),2);
+
+
         $products = products::count();
         $sections = sections::count();
+
+        $invoices_count=invoices::count();
+        $Total_invoices=number_format(invoices::sum('Total'),2);
 
         $chartjs = app()->chartjs
             ->name('barChartTest')
             ->type('bar')
-            ->size(['width' => 350, 'height' => 200])
+            ->size(['width' => 350, 'height' => 240])
             ->labels(['الفواتير الغير المدفوعة', 'الفواتير المدفوعة', 'الفواتير المدفوعة جزئيا'])
             ->datasets([
                 [
                     "label" => "الفواتير الغير المدفوعة",
                     'backgroundColor' => ['#81b214'],
-                    'data' => [$result7]
+                    'data' => [$unpaid_invoices]
                 ],
                 [
                     "label" => "الفواتير المدفوعة",
                     'backgroundColor' => ['#ec5858'],
-                    'data' => [$result4]
+                    'data' => [$paid_invoices]
                 ],
                 [
                     "label" => "الفواتير المدفوعة جزئيا",
                     'backgroundColor' => ['#ff9642'],
-                    'data' => [$result1]
+                    'data' => [$Partially_paid_invoices]
                 ],
 
 
@@ -95,22 +88,11 @@ class HomeController extends Controller
             ])
             ->options([]);
 
-        return view('home', compact('result3', 'result6','result9', 'chartjs', 'chartjs_2'));
-
-
-
-
-        // ExampleController.php
-
-
-
-        // example.blade.php
-
-
-
-
-
-
-
+        return view('home', compact( 'paid_invoices','Total_paid_invoices','Total_unpaid_invoices',
+        'Total_Partially_invoices',
+        'unpaid_invoices',
+        'Partially_paid_invoices','chartjs',
+        'chartjs_2','invoices_count',
+        'Total_invoices'));
     }
 }

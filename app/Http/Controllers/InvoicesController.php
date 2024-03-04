@@ -112,46 +112,22 @@ class InvoicesController extends Controller
             'note' => $request->note,
             'user' => (Auth::user()->name),
         ]);
-        // dd($request);
         if ($request->hasFile('pic')) {
-
             $invoice_id = Invoices::latest()->first()->id;
             $image = $request->file('pic');
             $file_name = $image->getClientOriginalName();
             $invoice_number = $request->invoice_number;
-
             $attachments = new invoice_attachments();
             $attachments->file_name = $file_name;
             $attachments->invoice_number = $invoice_number;
             $attachments->Created_by = Auth::user()->name;
             $attachments->invoice_id = $invoice_id;
             $attachments->save();
-
-            // move pic
             $imageName = $request->pic->getClientOriginalName();
             $request->pic->move(public_path('Attachments/' . $invoice_number), $imageName);
         }
 
-
-        // $user = User::first();
-        // Notification::send($user, new AddInvoice($invoice_id));
-
-        //   $user = User::get();
         $invoices = invoices::latest()->first();
-        //  Notification::send($user, new \App\Notifications\Add_invoice_new($invoices));
-
-
-
-        // $validated = $request->validate([
-        //     'invoice_Date'=>'required',
-        //     'Due_date' => 'required|date|date_format:Y-m-d|before:invoice_Date',
-        //        ]);
-        //        return redirect('invoices.add-invoices');
-
-
-
-        //event(new MyEventClass('hello world'));
-
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
         return back();
     }
@@ -184,8 +160,7 @@ class InvoicesController extends Controller
             'invoices.Value_Status'
         )
         ->where('id_Invoice', $id)->first();
-        // dd($invoices);
-        return view('invoices.status_update', compact('invoices'));
+                return view('invoices.status_update', compact('invoices'));
     }
 
     /**

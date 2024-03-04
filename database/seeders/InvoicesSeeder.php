@@ -15,7 +15,7 @@ class InvoicesSeeder extends Seeder
      */
     public function run()
     {
-        foreach(range(1,100) as $range){
+        foreach(range(1,30) as $range){
             invoices::create([
         'invoice_number'=> $range,
         'invoice_Date'  =>'2023-10-25 11:02:56',
@@ -47,7 +47,7 @@ class InvoicesSeeder extends Seeder
         'user'=>'1',
     ]);
 }
-foreach(range(1,50) as $range){
+foreach(range(1,30) as $range){
     invoices::create([
         'invoice_number'=> $range,
         'invoice_Date'  =>'2023-10-25 11:02:56',
