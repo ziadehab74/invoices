@@ -30,10 +30,7 @@
 								</div>
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
-										<div class="">
-											<h4 class="tx-20 font-weight-bold mb-1 text-white">{{$Total_invoices}}</h4>
-											<p class="mb-0 tx-12 text-white op-7">{{$invoices_count}}</p>
-										</div>
+                                        <livewire:total-invoices />
 										<span class="float-right my-auto mr-auto">
 											<i class="fas fa-arrow-circle-up text-white"></i>
 											<span class="text-white op-7"> </span>
